@@ -35,6 +35,13 @@ mkdir -p "$APP_DIR/Contents/Resources"
 # Copy executable
 cp "$EXECUTABLE" "$APP_DIR/Contents/MacOS/$APP_NAME"
 
+# Copy icon
+ICON_SRC="$PROJECT_DIR/ExifCloak/Resources/AppIcon.icns"
+if [ -f "$ICON_SRC" ]; then
+    cp "$ICON_SRC" "$APP_DIR/Contents/Resources/AppIcon.icns"
+    echo "  Icon: AppIcon.icns included"
+fi
+
 # Create Info.plist
 cat > "$APP_DIR/Contents/Info.plist" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -61,6 +68,8 @@ cat > "$APP_DIR/Contents/Info.plist" << EOF
     <string>public.app-category.photography</string>
     <key>NSHighResolutionCapable</key>
     <true/>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
     <key>NSHumanReadableCopyright</key>
     <string>Copyright © 2026 ExifCloak. All rights reserved.</string>
     <key>CFBundleDocumentTypes</key>
