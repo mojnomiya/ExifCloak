@@ -1,5 +1,5 @@
 #!/bin/zsh
-# Build ExifCloak as a .app bundle and package it into a DMG
+# Build ExifCloak as a .app bundle and package it into a styled DMG
 set -e
 
 APP_NAME="ExifCloak"
@@ -10,7 +10,6 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="$PROJECT_DIR/.build/app"
 APP_DIR="$BUILD_DIR/$APP_NAME.app"
-DMG_DIR="$PROJECT_DIR/.build/dmg"
 DMG_PATH="$PROJECT_DIR/.build/$APP_NAME-$VERSION.dmg"
 
 echo "=== Building $APP_NAME v$VERSION ==="
@@ -22,11 +21,11 @@ swift build -c release 2>&1 | tail -3
 
 EXECUTABLE="$PROJECT_DIR/.build/release/$APP_NAME"
 if [ ! -f "$EXECUTABLE" ]; then
-    echo "Error: Build failed. Executable not found at $EXECUTABLE"
+    echo "Error: Build failed. Executable not found."
     exit 1
 fi
 
-# Step 2: Create .app bundle structure
+# Step 2: Create .app bundle
 echo "[2/4] Creating .app bundle..."
 rm -rf "$APP_DIR"
 mkdir -p "$APP_DIR/Contents/MacOS"
@@ -35,15 +34,13 @@ mkdir -p "$APP_DIR/Contents/Resources"
 # Copy executable
 cp "$EXECUTABLE" "$APP_DIR/Contents/MacOS/$APP_NAME"
 
-# Ad-hoc code sign (prevents "damaged" Gatekeeper error for local builds)
-echo "  Signing (ad-hoc)..."
-codesign --force --deep --sign - "$APP_DIR/Contents/MacOS/$APP_NAME"
+# Ad-hoc sign the binary
+codesign --force --deep --sign - "$APP_DIR/Contents/MacOS/$APP_NAME" 2>/dev/null
 
 # Copy icon
 ICON_SRC="$PROJECT_DIR/ExifCloak/Resources/AppIcon.icns"
 if [ -f "$ICON_SRC" ]; then
     cp "$ICON_SRC" "$APP_DIR/Contents/Resources/AppIcon.icns"
-    echo "  Icon: AppIcon.icns included"
 fi
 
 # Create Info.plist
@@ -66,14 +63,14 @@ cat > "$APP_DIR/Contents/Info.plist" << EOF
     <string>APPL</string>
     <key>CFBundleExecutable</key>
     <string>$APP_NAME</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
     <key>LSMinimumSystemVersion</key>
     <string>14.0</string>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.photography</string>
     <key>NSHighResolutionCapable</key>
     <true/>
-    <key>CFBundleIconFile</key>
-    <string>AppIcon</string>
     <key>NSHumanReadableCopyright</key>
     <string>Copyright © 2026 ExifCloak. All rights reserved.</string>
     <key>CFBundleDocumentTypes</key>
@@ -99,27 +96,27 @@ cat > "$APP_DIR/Contents/Info.plist" << EOF
 </plist>
 EOF
 
-# Create PkgInfo
 echo -n "APPL????" > "$APP_DIR/Contents/PkgInfo"
 
-# Sign the entire .app bundle
-echo "  Signing .app bundle (ad-hoc)..."
-codesign --force --deep --sign - "$APP_DIR"
+# Sign the entire bundle
+codesign --force --deep --sign - "$APP_DIR" 2>/dev/null
 
-# Step 3: Create DMG
-echo "[3/4] Creating DMG..."
-rm -rf "$DMG_DIR"
-mkdir -p "$DMG_DIR"
-cp -R "$APP_DIR" "$DMG_DIR/"
-
-# Add a symlink to /Applications for drag-install
-ln -s /Applications "$DMG_DIR/Applications"
-
+# Step 3: Create styled DMG using create-dmg
+echo "[3/4] Creating styled DMG..."
 rm -f "$DMG_PATH"
-hdiutil create -volname "$APP_NAME" \
-    -srcfolder "$DMG_DIR" \
-    -ov -format UDZO \
-    "$DMG_PATH" 2>&1 | tail -2
+
+create-dmg \
+    --volname "$APP_NAME" \
+    --volicon "$APP_DIR/Contents/Resources/AppIcon.icns" \
+    --window-pos 200 120 \
+    --window-size 660 400 \
+    --icon-size 80 \
+    --icon "$APP_NAME.app" 180 200 \
+    --app-drop-link 480 200 \
+    --hide-extension "$APP_NAME.app" \
+    --no-internet-enable \
+    "$DMG_PATH" \
+    "$APP_DIR" 2>&1 | grep -v "^$"
 
 # Step 4: Done
 echo "[4/4] Complete!"
@@ -127,5 +124,3 @@ echo ""
 echo "  .app: $APP_DIR"
 echo "  .dmg: $DMG_PATH"
 echo "  Size: $(du -h "$DMG_PATH" | cut -f1)"
-echo ""
-echo "To notarize: xcrun notarytool submit \"$DMG_PATH\" --apple-id YOUR_ID --team-id YOUR_TEAM --password YOUR_APP_SPECIFIC_PASSWORD"
