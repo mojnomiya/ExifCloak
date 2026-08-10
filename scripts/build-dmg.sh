@@ -35,6 +35,10 @@ mkdir -p "$APP_DIR/Contents/Resources"
 # Copy executable
 cp "$EXECUTABLE" "$APP_DIR/Contents/MacOS/$APP_NAME"
 
+# Ad-hoc code sign (prevents "damaged" Gatekeeper error for local builds)
+echo "  Signing (ad-hoc)..."
+codesign --force --deep --sign - "$APP_DIR/Contents/MacOS/$APP_NAME"
+
 # Copy icon
 ICON_SRC="$PROJECT_DIR/ExifCloak/Resources/AppIcon.icns"
 if [ -f "$ICON_SRC" ]; then
@@ -97,6 +101,10 @@ EOF
 
 # Create PkgInfo
 echo -n "APPL????" > "$APP_DIR/Contents/PkgInfo"
+
+# Sign the entire .app bundle
+echo "  Signing .app bundle (ad-hoc)..."
+codesign --force --deep --sign - "$APP_DIR"
 
 # Step 3: Create DMG
 echo "[3/4] Creating DMG..."
