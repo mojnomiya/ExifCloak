@@ -12,26 +12,29 @@ ExifCloak is a free, open-source macOS utility for viewing, editing, stripping, 
 
 ## Download
 
-**[Download ExifCloak v1.0.0 (.dmg)](https://github.com/mojnomiya/ExifCloak/releases/download/v1.0.0/ExifCloak-1.0.0.dmg)**
+**[Download ExifCloak v1.0.0 (.dmg)](https://github.com/mojnomiya/ExifCloak/releases/download/v1.0.0/ExifCloak-1.0.0.dmg)** — macOS desktop app
 
-> First launch: If macOS says the app is "damaged", run `xattr -cr /Applications/ExifCloak.app` in Terminal. This removes the quarantine flag for unsigned downloads.
+**[Use ExifCloak Web Tool](https://exifcloak.app/tool)** — browser-based, no install needed
+
+> First launch (macOS): If macOS says the app is "damaged", run `xattr -cr /Applications/ExifCloak.app` in Terminal. This removes the quarantine flag for unsigned downloads.
 
 ---
 
 ## What it does
 
-| Feature | Description |
-|---------|-------------|
-| **View** | Inspect all metadata grouped by standard (EXIF, IPTC, XMP, GPS, TIFF, File) |
-| **Edit** | Inline edit any writable field — changes save directly to disk |
-| **Strip All** | Remove every piece of metadata in one click |
-| **Strip AI** | Target only AI/tool signatures, C2PA Content Credentials, generation markers |
-| **Auto-Generate** | Replace metadata with realistic camera profiles (iPhone, Canon, Nikon, Sony, Fuji) |
-| **Batch** | Apply any action to all files at once — no file-by-file clicking |
-| **Rename** | Finder-style batch rename (Replace Text, Add Text, Format) |
-| **Menu Bar** | Drop image on menu bar icon for instant strip |
-| **Presets** | Built-in + custom presets with import/export |
-| **Privacy** | 100% offline — zero network requests, no telemetry, no accounts |
+| Feature | Desktop | Web |
+|---------|:-------:|:---:|
+| **View metadata** (EXIF, IPTC, XMP, GPS, TIFF) | ✅ | ✅ |
+| **Edit** individual fields inline | ✅ | — |
+| **Strip All** metadata | ✅ | ✅ |
+| **Strip AI** fields (C2PA, DALL·E, Midjourney, etc.) | ✅ | ✅ |
+| **Auto-Generate** realistic camera profiles | ✅ | ✅ |
+| **Presets** (iPhone, DSLR, Mirrorless, Privacy) | ✅ | ✅ |
+| **Batch** process all files at once | ✅ | ✅ |
+| **Batch Rename** (Finder-style) | ✅ | — |
+| **Menu Bar** quick-strip | ✅ | — |
+| **Download** cleaned files | in-place save | ✅ |
+| **100% offline** | ✅ | ✅ (client-side) |
 
 ## Supported formats
 
@@ -39,7 +42,22 @@ JPEG, PNG, HEIC/HEIF, TIFF, WebP
 
 ---
 
-## Build from source
+## Web Tool
+
+ExifCloak also has a browser-based version at **[exifcloak.app/tool](https://exifcloak.app/tool)** — no install, no signup, 100% client-side.
+
+- Drag & drop images
+- View all EXIF/IPTC/XMP/GPS metadata
+- Strip all metadata or AI fields only
+- Apply presets (iPhone, DSLR, Mirrorless)
+- Download clean files
+- Works on any OS with a modern browser
+
+The web tool is built with Next.js and uses `exifr` for reading and `piexifjs` for writing EXIF data. Source is in the [exifcloak-web](https://github.com/mojnomiya/exifcloak-web) repo.
+
+---
+
+## Build from source (Desktop)
 
 ```bash
 git clone https://github.com/mojnomiya/ExifCloak.git
