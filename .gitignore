@@ -1,6 +1,19 @@
-.build/
-.swiftpm/
-*.xcuserstate
-xcuserdata/
-DerivedData/
+# macOS
 .DS_Store
+
+# Swift / Xcode
+apps/macos/.build/
+apps/macos/.swiftpm/
+apps/macos/DerivedData/
+apps/macos/xcuserdata/
+*.xcuserstate
+
+# Node / Next.js
+apps/web/node_modules/
+apps/web/.next/
+apps/web/out/
+
+# IDE
+.idea/
+.vscode/
+*.swp
