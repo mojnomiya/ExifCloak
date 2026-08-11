@@ -117,9 +117,3 @@ Areas where help is welcome:
 ## License
 
 [MIT](LICENSE) — free to use, modify, and distribute.
-
----
-
-## Support
-
-If ExifCloak is useful to you, consider [buying a coffee](https://buymeacoffee.com/exifcloak).
