@@ -4,7 +4,7 @@ import { DiagramGPS } from "@/components/blog-diagrams";
 export const metadata: Metadata = {
   title: "How to Remove GPS Location Data from Photos Before Sharing",
   description: "Strip GPS coordinates from photos on Mac, Windows, iPhone, and Android. Protect your privacy before sharing images online.",
-  alternates: { canonical: "https://exifcloak.app/blog/remove-gps-location-from-photos" },
+  alternates: { canonical: "https://exifcloak.netlify.app/blog/remove-gps-location-from-photos" },
 };
 
 export default function Post() {

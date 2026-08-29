@@ -22,7 +22,7 @@ export default function PrivacyPage() {
         <p>The browser-based tool at /tool processes images entirely in your browser using JavaScript. No files are uploaded to any server. No data is sent anywhere. The tool works fully offline once loaded.</p>
 
         <h2 className="text-[18px] font-semibold text-[var(--text)] pt-4">Website</h2>
-        <p>This marketing website (exifcloak.app) may use basic analytics and advertising services (Google AdSense) which set their own cookies. These services are only present on the marketing pages — never on the /tool page where files are processed.</p>
+        <p>This marketing website (exifcloak.netlify.app) may use basic analytics and advertising services (Google AdSense) which set their own cookies. These services are only present on the marketing pages — never on the /tool page where files are processed.</p>
 
         <h2 className="text-[18px] font-semibold text-[var(--text)] pt-4">Cookies</h2>
         <p>We use a single localStorage key to remember your light/dark theme preference. Third-party advertising services may set cookies on marketing pages in accordance with their own privacy policies.</p>

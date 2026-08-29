@@ -30,7 +30,7 @@ export function Footer() {
           <div>
             <p className="text-[12px] font-medium mb-3">Community</p>
             <div className="space-y-2 text-[12px] text-[var(--text-tertiary)]">
-              <a href="https://github.com/mojnomiya/ExifCloak" className="block hover:text-[var(--text-secondary)]">GitHub</a>
+              <a href="https://github.com/mojnomiya/ExifCloak" className="block hover:text-[var(--text-secondary)]" rel="noopener noreferrer me">GitHub</a>
               <a href="https://github.com/mojnomiya/ExifCloak/issues" className="block hover:text-[var(--text-secondary)]">Report a Bug</a>
               <a href="https://github.com/mojnomiya/ExifCloak/blob/main/CONTRIBUTING.md" className="block hover:text-[var(--text-secondary)]">Contribute</a>
             </div>

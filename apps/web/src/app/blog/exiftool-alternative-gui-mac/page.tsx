@@ -4,7 +4,7 @@ import { DiagramGUI } from "@/components/blog-diagrams";
 export const metadata: Metadata = {
   title: "Best ExifTool Alternative with GUI for Mac (2026)",
   description: "ExifTool GUI alternatives for macOS. Visual metadata editors that don't require the command line.",
-  alternates: { canonical: "https://exifcloak.app/blog/exiftool-alternative-gui-mac" },
+  alternates: { canonical: "https://exifcloak.netlify.app/blog/exiftool-alternative-gui-mac" },
 };
 
 export default function Post() {

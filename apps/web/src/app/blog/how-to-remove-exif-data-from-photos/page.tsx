@@ -4,7 +4,7 @@ import { DiagramStrip } from "@/components/blog-diagrams";
 export const metadata: Metadata = {
   title: "How to Remove EXIF Data from Photos (Mac, Windows, Online) — 2026 Guide",
   description: "Step-by-step guide to removing EXIF metadata from photos on every platform. Strip GPS, camera info, timestamps, and AI markers. Free tools included.",
-  alternates: { canonical: "https://exifcloak.app/blog/how-to-remove-exif-data-from-photos" },
+  alternates: { canonical: "https://exifcloak.netlify.app/blog/how-to-remove-exif-data-from-photos" },
 };
 
 export default function Post() {

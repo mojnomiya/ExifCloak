@@ -13,7 +13,7 @@ Free, open-source image metadata manager. View, edit, strip, and regenerate EXIF
 | Platform | Path | Status |
 |----------|------|--------|
 | **macOS** (native SwiftUI) | [`apps/macos/`](apps/macos/) | v1.0.0 released |
-| **Web** (Next.js, client-side) | [`apps/web/`](apps/web/) | Live at [exifcloak.app](https://exifcloak.app) |
+| **Web** (Next.js, client-side) | [`apps/web/`](apps/web/) | Live at [exifcloak.netlify.app](https://exifcloak.netlify.app) |
 | **Windows** | — | Planned |
 
 ---
@@ -64,7 +64,7 @@ npm run dev
 ## Download
 
 - **macOS:** [ExifCloak-1.0.0.dmg](https://github.com/mojnomiya/ExifCloak/releases/download/v1.0.0/ExifCloak-1.0.0.dmg)
-- **Web:** [exifcloak.app/tool](https://exifcloak.app/tool)
+- **Web:** [exifcloak.netlify.app/tool](https://exifcloak.netlify.app/tool)
 
 ---
 

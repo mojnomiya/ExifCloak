@@ -4,7 +4,7 @@ import { DiagramBatch } from "@/components/blog-diagrams";
 export const metadata: Metadata = {
   title: "How to Batch Remove Metadata from Hundreds of Photos",
   description: "Strip EXIF, GPS, and AI markers from entire folders at once. Best tools for batch metadata removal in 2026.",
-  alternates: { canonical: "https://exifcloak.app/blog/batch-remove-metadata-from-photos" },
+  alternates: { canonical: "https://exifcloak.netlify.app/blog/batch-remove-metadata-from-photos" },
 };
 
 export default function Post() {

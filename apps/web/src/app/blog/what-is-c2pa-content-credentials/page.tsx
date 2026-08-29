@@ -4,7 +4,7 @@ import { DiagramC2PA } from "@/components/blog-diagrams";
 export const metadata: Metadata = {
   title: "What Are C2PA Content Credentials? How AI Images Get Labeled",
   description: "C2PA Content Credentials explained: what they are, how they mark AI-generated images, which platforms use them, and how to remove them.",
-  alternates: { canonical: "https://exifcloak.app/blog/what-is-c2pa-content-credentials" },
+  alternates: { canonical: "https://exifcloak.netlify.app/blog/what-is-c2pa-content-credentials" },
 };
 
 export default function Post() {

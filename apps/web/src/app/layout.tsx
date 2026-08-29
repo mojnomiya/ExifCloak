@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://exifcloak.app"),
+  metadataBase: new URL("https://exifcloak.netlify.app"),
   title: {
     default: "ExifCloak — Free Open-Source EXIF & Metadata Editor for macOS",
     template: "%s | ExifCloak",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     "image metadata manager",
     "photo metadata remover offline",
   ],
-  authors: [{ name: "ExifCloak", url: "https://exifcloak.app" }],
+  authors: [{ name: "ExifCloak", url: "https://exifcloak.netlify.app" }],
   creator: "ExifCloak",
   publisher: "ExifCloak",
   category: "Photography",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     description:
       "View, edit, strip, and regenerate image metadata. Remove GPS, AI markers, C2PA credentials. 100% offline, open-source, native macOS app.",
     type: "website",
-    url: "https://exifcloak.app",
+    url: "https://exifcloak.netlify.app",
     siteName: "ExifCloak",
     locale: "en_US",
     images: [
@@ -59,13 +59,14 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: "@moznu",
     title: "ExifCloak — Free EXIF & Metadata Editor for macOS",
     description:
       "Strip EXIF, GPS, AI markers from photos. Batch process. Auto-generate realistic camera profiles. Open-source, 100% offline.",
-    images: ["/og-image.png"],
+    images: ["https://exifcloak.netlify.app/og-image.png"],
   },
   alternates: {
-    canonical: "https://exifcloak.app",
+    canonical: "https://exifcloak.netlify.app",
   },
   robots: {
     index: true,
@@ -100,7 +101,7 @@ const jsonLd = {
   fileSize: "1MB",
   license: "https://opensource.org/licenses/MIT",
   isAccessibleForFree: true,
-  screenshot: "https://exifcloak.app/og-image.png",
+  screenshot: "https://exifcloak.netlify.app/og-image.png",
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: "4.8",

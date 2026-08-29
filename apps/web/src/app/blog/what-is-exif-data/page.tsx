@@ -4,7 +4,7 @@ import { DiagramEXIF } from "@/components/blog-diagrams";
 export const metadata: Metadata = {
   title: "What Is EXIF Data? A Complete Guide for 2026",
   description: "EXIF data explained: what it contains, how cameras embed it, privacy risks, and how to view or remove it from photos.",
-  alternates: { canonical: "https://exifcloak.app/blog/what-is-exif-data" },
+  alternates: { canonical: "https://exifcloak.netlify.app/blog/what-is-exif-data" },
 };
 
 export default function Post() {
