@@ -1,0 +1,79 @@
+appId: com.exifcloak.app
+productName: ExifCloak
+copyright: Copyright © 2024 ExifCloak
+
+directories:
+  output: release
+  buildResources: resources
+
+files:
+  - dist/**/*
+  - "!node_modules/**/{__tests__,test}/**"
+  - "!**/*.map"
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+  icon: resources/icon.ico
+  artifactName: "ExifCloak-${version}-Setup.${ext}"
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: resources/icon.ico
+  uninstallerIcon: resources/icon.ico
+  installerHeaderIcon: resources/icon.ico
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: ExifCloak
+  installerLanguages:
+    - 1033
+  language: 1033
+
+portable:
+  artifactName: "ExifCloak-${version}-Portable.${ext}"
+
+fileAssociations:
+  - ext: jpg
+    name: JPEG Image
+    description: JPEG Image with metadata
+    icon: resources/icon.ico
+  - ext: jpeg
+    name: JPEG Image
+    description: JPEG Image with metadata
+    icon: resources/icon.ico
+  - ext: png
+    name: PNG Image
+    description: PNG Image with metadata
+    icon: resources/icon.ico
+  - ext: heic
+    name: HEIC Image
+    description: HEIC Image with metadata
+    icon: resources/icon.ico
+  - ext: heif
+    name: HEIF Image
+    description: HEIF Image with metadata
+    icon: resources/icon.ico
+  - ext: tiff
+    name: TIFF Image
+    description: TIFF Image with metadata
+    icon: resources/icon.ico
+  - ext: tif
+    name: TIFF Image
+    description: TIFF Image with metadata
+    icon: resources/icon.ico
+  - ext: webp
+    name: WebP Image
+    description: WebP Image with metadata
+    icon: resources/icon.ico
+
+publish:
+  provider: github
+  owner: exifcloak
+  repo: exifcloak
