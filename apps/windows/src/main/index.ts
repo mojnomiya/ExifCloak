@@ -245,13 +245,26 @@ function registerIPC(): void {
 }
 
 // App lifecycle
-app.whenReady().then(() => {
+  app.whenReady().then(() => {
   registerIPC();
   registerMetadataIPC();
   registerPresetIPC();
   registerExportIPC();
   createWindow();
   setupAutoUpdater();
+
+  // Handle file args on Windows (launched via file association)
+  if (process.platform !== "darwin" && mainWindow) {
+    const fileArgs = process.argv.slice(1).filter((arg) => {
+      const ext = path.extname(arg).toLowerCase();
+      return SUPPORTED_EXTENSIONS.includes(ext);
+    });
+    if (fileArgs.length > 0) {
+      mainWindow.webContents.on("did-finish-load", () => {
+        mainWindow!.webContents.send("app:fileOpen", fileArgs);
+      });
+    }
+  }
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -274,24 +287,12 @@ app.on("before-quit", () => {
 
 // Handle file open from OS
 // macOS: open-file event
-// Windows: process.argv on launch, second-instance for subsequent opens
 if (process.platform === "darwin") {
   app.on("open-file", (_event, filePath) => {
     if (mainWindow) {
       mainWindow.webContents.send("app:fileOpen", [filePath]);
     }
   });
-} else {
-  // Windows: check argv for file paths on startup
-  const fileArgs = process.argv.slice(1).filter((arg) => {
-    const ext = path.extname(arg).toLowerCase();
-    return SUPPORTED_EXTENSIONS.includes(ext);
-  });
-  if (fileArgs.length > 0 && mainWindow) {
-    mainWindow.webContents.on("did-finish-load", () => {
-      mainWindow!.webContents.send("app:fileOpen", fileArgs);
-    });
-  }
 }
 
 // Handle second instance (Windows: user opens file while app is running)

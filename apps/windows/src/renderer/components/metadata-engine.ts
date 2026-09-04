@@ -1,5 +1,5 @@
-import type { ProcessedFile, MetadataField } from "./types";
-import { isSuspicious } from "./types";
+import type { ProcessedFile, MetadataField } from "../types";
+import { isSuspicious } from "../types";
 
 function detectGroup(key: string): string {
   const lower = key.toLowerCase();
@@ -60,7 +60,8 @@ async function readMetadataFromFile(filePath: string): Promise<MetadataField[]> 
 
   try {
     const exifr = await import("exifr");
-    const data = await exifr.parse(filePath, {
+    const buffer = await window.electronAPI.readFile(filePath);
+    const data = await exifr.parse(buffer, {
       tiff: true,
       exif: true,
       gps: true,

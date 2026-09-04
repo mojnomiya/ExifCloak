@@ -1,23 +1,5 @@
 import type { ExifData } from "./presets";
 
-declare global {
-  interface Window {
-    electronAPI: {
-      openFiles: () => Promise<string[]>;
-      openFolder: () => Promise<string | null>;
-      readFile: (filePath: string) => Promise<Uint8Array>;
-      writeFile: (filePath: string, data: Uint8Array) => Promise<void>;
-      getFileName: (filePath: string) => Promise<string>;
-      getFileSize: (filePath: string) => Promise<number>;
-      getFilePaths: (dirPath: string, extensions: string[]) => Promise<string[]>;
-      onFileOpen: (callback: (filePaths: string[]) => void) => void;
-      removeAllListeners: (channel: string) => void;
-      platform: string;
-      invoke: (channel: string, ...args: unknown[]) => Promise<unknown>;
-    };
-  }
-}
-
 export async function stripAllMetadata(filePath: string): Promise<void> {
   const result = await window.electronAPI.invoke(
     "metadata:stripAll",

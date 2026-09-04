@@ -8,6 +8,7 @@ export interface ElectronAPI {
   getFilePaths: (dirPath: string, extensions: string[]) => Promise<string[]>;
   onFileOpen: (callback: (filePaths: string[]) => void) => void;
   removeAllListeners: (channel: string) => void;
+  invoke: (channel: string, ...args: unknown[]) => Promise<unknown>;
   platform: string;
 }
 
