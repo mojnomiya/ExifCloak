@@ -237,7 +237,7 @@ function registerIPC(): void {
 }
 
 // App lifecycle
-  app.whenReady().then(() => {
+app.whenReady().then(() => {
   registerIPC();
   registerMetadataIPC();
   registerPresetIPC();
