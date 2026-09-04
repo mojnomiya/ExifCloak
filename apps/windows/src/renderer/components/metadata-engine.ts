@@ -1,26 +1,15 @@
 import type { ProcessedFile, MetadataField } from "../types";
-import { isSuspicious } from "../types";
 
-function detectGroup(key: string): string {
-  const lower = key.toLowerCase();
-  if (lower.startsWith("gps") || lower === "latitude" || lower === "longitude") return "GPS";
-  if (lower.includes("iptc") || ["headline", "caption", "keywords", "city", "country"].includes(lower)) return "IPTC";
-  if (lower.includes("xmp") || lower.includes("creator")) return "XMP";
-  if (["make", "model", "software", "orientation", "artist", "copyright"].includes(lower)) return "TIFF";
-  return "EXIF";
+interface ReadResult {
+  fields: MetadataField[];
+  name: string;
+  size: number;
+  type: string;
 }
 
-function formatValue(value: unknown): string {
-  if (value instanceof Date) return value.toLocaleString();
-  if (Array.isArray(value)) return value.map(String).join(", ");
-  if (typeof value === "object" && value !== null) return JSON.stringify(value);
-  return String(value);
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return bytes + " bytes";
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+async function readMetadataFromMain(filePath: string): Promise<ReadResult> {
+  const result = await window.electronAPI.invoke("metadata:read", filePath);
+  return result as ReadResult;
 }
 
 async function createThumbnailFromFile(filePath: string): Promise<string> {
@@ -55,84 +44,25 @@ async function createThumbnailFromFile(filePath: string): Promise<string> {
   }
 }
 
-async function readMetadataFromFile(filePath: string): Promise<MetadataField[]> {
-  const fields: MetadataField[] = [];
-
-  try {
-    const exifr = await import("exifr");
-    const rawData = await window.electronAPI.readFile(filePath);
-    // exifr works more reliably with Blob than raw Uint8Array in some contexts
-    const blob = new Blob([rawData]);
-    const data = await exifr.parse(blob, {
-      tiff: true,
-      exif: true,
-      gps: true,
-      iptc: true,
-      xmp: true,
-      icc: false,
-      jfif: true,
-      ihdr: true,
-    });
-
-    if (!data) return fields;
-
-    for (const [key, value] of Object.entries(data)) {
-      if (value === undefined || value === null) continue;
-      const group = detectGroup(key);
-      const strValue = formatValue(value);
-      fields.push({
-        key,
-        value: strValue,
-        group,
-        suspicious: isSuspicious(key),
-      });
-    }
-  } catch {
-    // File might not have parseable metadata
-  }
-
-  return fields;
-}
-
 export async function processFileFromPath(filePath: string): Promise<ProcessedFile | null> {
   try {
-    const name = await window.electronAPI.getFileName(filePath);
-    const size = await window.electronAPI.getFileSize(filePath);
-    const ext = name.split(".").pop()?.toLowerCase() || "";
-    const typeMap: Record<string, string> = {
-      jpg: "image/jpeg",
-      jpeg: "image/jpeg",
-      png: "image/png",
-      heic: "image/heic",
-      heif: "image/heif",
-      tiff: "image/tiff",
-      tif: "image/tiff",
-      webp: "image/webp",
-    };
-    const type = typeMap[ext] || "image/jpeg";
-
-    const [thumbnail, metadata] = await Promise.all([
+    const [thumbnail, readResult] = await Promise.all([
       createThumbnailFromFile(filePath),
-      readMetadataFromFile(filePath),
+      readMetadataFromMain(filePath),
     ]);
-
-    metadata.push(
-      { key: "FileName", value: name, group: "File", suspicious: false },
-      { key: "FileSize", value: formatBytes(size), group: "File", suspicious: false },
-      { key: "FileType", value: type, group: "File", suspicious: false }
-    );
 
     return {
       id: crypto.randomUUID(),
-      name,
-      size,
-      type,
+      name: readResult.name,
+      size: readResult.size,
+      type: readResult.type,
       filePath,
       thumbnail,
-      metadata,
+      metadata: readResult.fields,
       stripped: false,
     };
-  } catch {
+  } catch (err) {
+    console.error("[metadata-engine] processFileFromPath error:", err);
     return null;
   }
 }

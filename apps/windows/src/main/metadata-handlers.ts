@@ -17,6 +17,41 @@ function getSharpSync() {
   return sharpInstance;
 }
 
+function detectGroup(key: string): string {
+  const lower = key.toLowerCase();
+  if (lower.startsWith("gps") || lower === "latitude" || lower === "longitude") return "GPS";
+  if (lower.includes("iptc") || ["headline", "caption", "keywords", "city", "country"].includes(lower)) return "IPTC";
+  if (lower.includes("xmp") || lower.includes("creator")) return "XMP";
+  if (["make", "model", "software", "orientation", "artist", "copyright"].includes(lower)) return "TIFF";
+  return "EXIF";
+}
+
+const SUSPICIOUS_KEYS = new Set([
+  "Software", "CreatorTool", "ProcessingSoftware", "HistorySoftwareAgent",
+  "ImageDescription", "UserComment", "MakerNote", "XMP:CreatorTool",
+  "parameters", "prompt", "negative_prompt",
+]);
+
+function isSuspiciousKey(key: string): boolean {
+  if (SUSPICIOUS_KEYS.has(key)) return true;
+  const lower = key.toLowerCase();
+  return lower.includes("c2pa") || lower.includes("contentcredentials") || lower.includes("gps");
+}
+
+interface MetadataField {
+  key: string;
+  value: string;
+  group: string;
+  suspicious: boolean;
+}
+
+function formatValue(value: unknown): string {
+  if (value instanceof Date) return value.toLocaleString();
+  if (Array.isArray(value)) return value.map(String).join(", ");
+  if (typeof value === "object" && value !== null) return JSON.stringify(value);
+  return String(value);
+}
+
 export function registerMetadataIPC(): void {
   // Strip all metadata from a file on disk
   ipcMain.handle(
@@ -222,6 +257,65 @@ export function registerMetadataIPC(): void {
       }
 
       return { processed, errors, errorFiles };
+    }
+  );
+
+  // Read metadata from a file on disk (runs in main process where exifr works reliably)
+  ipcMain.handle(
+    "metadata:read",
+    async (
+      _event,
+      filePath: string
+    ): Promise<{ fields: MetadataField[]; name: string; size: number; type: string }> => {
+      const name = path.basename(filePath);
+      const stats = fs.statSync(filePath);
+      const ext = path.extname(filePath).toLowerCase();
+      const typeMap: Record<string, string> = {
+        ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png",
+        ".heic": "image/heic", ".heif": "image/heif", ".tiff": "image/tiff",
+        ".tif": "image/tiff", ".webp": "image/webp",
+      };
+      const type = typeMap[ext] || "image/jpeg";
+
+      const fields: MetadataField[] = [];
+
+      try {
+        const exifr = require("exifr");
+        const buffer = fs.readFileSync(filePath);
+        const data = await exifr.parse(buffer, {
+          tiff: true, exif: true, gps: true, iptc: true,
+          xmp: true, icc: false, jfif: true, ihdr: true,
+        });
+
+        if (data) {
+          for (const [key, value] of Object.entries(data)) {
+            if (value === undefined || value === null) continue;
+            fields.push({
+              key,
+              value: formatValue(value),
+              group: detectGroup(key),
+              suspicious: isSuspiciousKey(key),
+            });
+          }
+        }
+      } catch (err) {
+        console.error("[metadata] read exifr error:", err);
+      }
+
+      // File info fields
+      fields.push(
+        { key: "FileName", value: name, group: "File", suspicious: false },
+        {
+          key: "FileSize",
+          value: stats.size < 1024 ? stats.size + " B"
+            : stats.size < 1024 * 1024 ? (stats.size / 1024).toFixed(0) + " KB"
+            : (stats.size / (1024 * 1024)).toFixed(1) + " MB",
+          group: "File", suspicious: false,
+        },
+        { key: "FileType", value: type, group: "File", suspicious: false }
+      );
+
+      return { fields, name, size: stats.size, type };
     }
   );
 }
