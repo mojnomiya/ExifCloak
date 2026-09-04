@@ -14,7 +14,7 @@ Free, open-source image metadata manager. View, edit, strip, and regenerate EXIF
 |----------|------|--------|
 | **macOS** (native SwiftUI) | [`apps/macos/`](apps/macos/) | v1.0.0 released |
 | **Web** (Next.js, client-side) | [`apps/web/`](apps/web/) | Live at [exifcloak.netlify.app](https://exifcloak.netlify.app) |
-| **Windows** | — | Planned |
+| **Windows** (Electron) | [`apps/windows/`](apps/windows/) | In development |
 
 ---
 
@@ -42,22 +42,38 @@ npm run dev
 # → http://localhost:3000
 ```
 
+### Windows App
+
+```bash
+cd apps/windows
+npm install
+npm run dev
+```
+
+Build installer:
+```bash
+npm run package
+# Output in release/
+```
+
 ---
 
 ## Features
 
-| Feature | macOS | Web |
-|---------|:-----:|:---:|
-| View metadata (EXIF, IPTC, XMP, GPS) | ✅ | ✅ |
-| Edit fields inline | ✅ | — |
-| Strip all metadata | ✅ | ✅ |
-| Strip AI/C2PA fields | ✅ | ✅ |
-| Auto-generate camera profiles | ✅ | ✅ |
-| Presets (iPhone, DSLR, Mirrorless) | ✅ | ✅ |
-| Batch processing | ✅ | ✅ |
-| Batch rename | ✅ | — |
-| Menu bar quick-strip | ✅ | — |
-| 100% offline | ✅ | ✅ |
+| Feature | macOS | Web | Windows |
+|---------|:-----:|:---:|:-------:|
+| View metadata (EXIF, IPTC, XMP, GPS) | ✅ | ✅ | ✅ |
+| Edit fields inline | ✅ | — | — |
+| Strip all metadata | ✅ | ✅ | ✅ |
+| Strip AI/C2PA fields | ✅ | ✅ | ✅ |
+| Auto-generate camera profiles | ✅ | ✅ | — |
+| Presets (iPhone, DSLR, Mirrorless) | ✅ | ✅ | ✅ |
+| Batch processing | ✅ | ✅ | ✅ |
+| Batch rename | ✅ | — | — |
+| Menu bar / system tray | ✅ | — | ✅ |
+| File associations | ✅ | — | ✅ |
+| Auto-updates | — | — | ✅ |
+| 100% offline | ✅ | ✅ | ✅ |
 
 ---
 
