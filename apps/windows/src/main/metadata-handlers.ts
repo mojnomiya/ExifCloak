@@ -8,11 +8,11 @@ import * as path from "path";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let sharpInstance: any = null;
 
-async function getSharp() {
+function getSharpSync() {
   if (!sharpInstance) {
-    // sharp ESM default export
-    const mod = await import("sharp");
-    sharpInstance = mod.default ?? mod;
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const mod = require("sharp");
+    sharpInstance = typeof mod === "function" ? mod : mod.default ?? mod;
   }
   return sharpInstance;
 }
@@ -23,8 +23,11 @@ export function registerMetadataIPC(): void {
     "metadata:stripAll",
     async (_event, filePath: string): Promise<{ success: boolean; error?: string }> => {
       try {
-        const s = await getSharp();
+        console.log("[metadata] stripAll called for:", filePath);
+        const s = getSharpSync();
+        console.log("[metadata] sharp loaded:", typeof s);
         const buffer = fs.readFileSync(filePath);
+        console.log("[metadata] file read, size:", buffer.length);
         const ext = path.extname(filePath).toLowerCase();
 
         let pipeline = s(buffer);
@@ -51,14 +54,18 @@ export function registerMetadataIPC(): void {
         }
 
         const outputBuffer = await pipeline.toBuffer();
+        console.log("[metadata] sharp output size:", outputBuffer.length);
 
         // Atomic write: write to temp, then rename
         const tempPath = filePath + ".tmp_" + Date.now();
         fs.writeFileSync(tempPath, outputBuffer);
+        console.log("[metadata] temp file written:", tempPath);
         fs.renameSync(tempPath, filePath);
+        console.log("[metadata] rename done, strip complete");
 
         return { success: true };
       } catch (err) {
+        console.error("[metadata] stripAll error:", err);
         return {
           success: false,
           error: err instanceof Error ? err.message : "Unknown error",
@@ -85,7 +92,7 @@ export function registerMetadataIPC(): void {
 
         if (!isJpeg) {
           // For non-JPEG, just strip metadata
-          const s = await getSharp();
+          const s = getSharpSync();
           const buffer = fs.readFileSync(filePath);
           let pipeline = s(buffer);
 
@@ -112,7 +119,7 @@ export function registerMetadataIPC(): void {
         }
 
         // For JPEG: strip then inject EXIF via piexifjs
-        const s = await getSharp();
+        const s = getSharpSync();
         const buffer = fs.readFileSync(filePath);
 
         // First strip all metadata
@@ -179,7 +186,7 @@ export function registerMetadataIPC(): void {
 
       for (const filePath of filePaths) {
         try {
-          const s = await getSharp();
+          const s = getSharpSync();
           const buffer = fs.readFileSync(filePath);
           const ext = path.extname(filePath).toLowerCase();
 

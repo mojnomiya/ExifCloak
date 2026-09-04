@@ -60,8 +60,10 @@ async function readMetadataFromFile(filePath: string): Promise<MetadataField[]> 
 
   try {
     const exifr = await import("exifr");
-    const buffer = await window.electronAPI.readFile(filePath);
-    const data = await exifr.parse(buffer, {
+    const rawData = await window.electronAPI.readFile(filePath);
+    // exifr works more reliably with Blob than raw Uint8Array in some contexts
+    const blob = new Blob([rawData]);
+    const data = await exifr.parse(blob, {
       tiff: true,
       exif: true,
       gps: true,

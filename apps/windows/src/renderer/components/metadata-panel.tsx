@@ -40,9 +40,12 @@ export function MetadataPanel({ file, onUpdate }: Props) {
     if (!file) return;
     setStripping(true);
     try {
+      console.log("[panel] stripAll starting for:", file.filePath);
       const { stripAllMetadata } = await import("./strip-engine");
       await stripAllMetadata(file.filePath);
+      console.log("[panel] strip done, re-reading file...");
       const reprocessed = await processFileFromPath(file.filePath);
+      console.log("[panel] reprocessed metadata count:", reprocessed?.metadata.length);
       if (reprocessed) {
         onUpdate(file.id, {
           metadata: reprocessed.metadata,
@@ -53,6 +56,7 @@ export function MetadataPanel({ file, onUpdate }: Props) {
       }
       showMessage("All metadata stripped");
     } catch (err) {
+      console.error("[panel] strip error:", err);
       showMessage("Strip failed: " + (err instanceof Error ? err.message : "unknown"));
     }
     setStripping(false);

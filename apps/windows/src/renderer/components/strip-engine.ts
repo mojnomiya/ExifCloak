@@ -1,10 +1,12 @@
 import type { ExifData } from "./presets";
 
 export async function stripAllMetadata(filePath: string): Promise<void> {
+  console.log("[strip-engine] stripAllMetadata called:", filePath);
   const result = await window.electronAPI.invoke(
     "metadata:stripAll",
     filePath
   );
+  console.log("[strip-engine] stripAll result:", result);
   if (result && typeof result === "object" && !(result as { success: boolean }).success) {
     throw new Error((result as { error: string }).error || "Strip failed");
   }
