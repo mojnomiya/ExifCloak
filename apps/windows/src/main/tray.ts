@@ -2,11 +2,16 @@ import { Tray, Menu, nativeImage, app, BrowserWindow } from "electron";
 import * as path from "path";
 
 let tray: Tray | null = null;
+let isQuitting = false;
+
+export function setQuitting(value: boolean): void {
+  isQuitting = value;
+}
 
 export function createTray(mainWindow: BrowserWindow): void {
   // Create a 16x16 tray icon
   const iconPath = path.join(__dirname, "../../resources/icon.png");
-  let trayIcon: nativeImage;
+  let trayIcon: Electron.NativeImage;
   try {
     trayIcon = nativeImage.createFromPath(iconPath).resize({ width: 16, height: 16 });
   } catch {
@@ -43,7 +48,7 @@ export function createTray(mainWindow: BrowserWindow): void {
 
   // Hide to tray instead of closing
   mainWindow.on("close", (event) => {
-    if (!app.isQuitting) {
+    if (!isQuitting) {
       event.preventDefault();
       mainWindow.hide();
     }

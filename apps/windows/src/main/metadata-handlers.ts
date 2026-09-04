@@ -5,13 +5,16 @@ import * as path from "path";
 // We use sharp for high-quality metadata stripping on disk files
 // sharp handles JPEG, PNG, WebP, TIFF, HEIC
 
-let sharp: typeof import("sharp") | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let sharpInstance: any = null;
 
-async function getSharp(): Promise<typeof import("sharp")> {
-  if (!sharp) {
-    sharp = await import("sharp");
+async function getSharp() {
+  if (!sharpInstance) {
+    // sharp ESM default export
+    const mod = await import("sharp");
+    sharpInstance = mod.default ?? mod;
   }
-  return sharp;
+  return sharpInstance;
 }
 
 export function registerMetadataIPC(): void {

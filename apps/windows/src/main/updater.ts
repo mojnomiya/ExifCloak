@@ -1,10 +1,8 @@
 import { autoUpdater } from "electron-updater";
-import { log } from "electron";
 
 let updateCheckInterval: ReturnType<typeof setInterval> | null = null;
 
 export function setupAutoUpdater(): void {
-  autoUpdater.logger = log;
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = true;
 

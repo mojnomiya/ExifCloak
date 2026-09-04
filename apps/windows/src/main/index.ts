@@ -2,20 +2,12 @@ import { app, BrowserWindow, dialog, ipcMain, Menu } from "electron";
 import * as path from "path";
 import * as fs from "fs";
 import { registerMetadataIPC } from "./metadata-handlers";
-import { createTray, destroyTray } from "./tray";
+import { createTray, destroyTray, setQuitting } from "./tray";
 import { registerPresetIPC } from "./preset-manager";
 import { registerExportIPC } from "./export-service";
 import { setupAutoUpdater, stopAutoUpdater } from "./updater";
 
 let mainWindow: BrowserWindow | null = null;
-
-// Extend app for tray quit detection
-declare module "electron" {
-  interface App {
-    isQuitting: boolean;
-  }
-}
-app.isQuitting = false;
 
 const SUPPORTED_EXTENSIONS = [
   ".jpg", ".jpeg", ".png", ".heic", ".heif", ".tiff", ".tif", ".webp",
@@ -280,7 +272,7 @@ app.on("window-all-closed", () => {
 });
 
 app.on("before-quit", () => {
-  app.isQuitting = true;
+  setQuitting(true);
   stopAutoUpdater();
   destroyTray();
 });
