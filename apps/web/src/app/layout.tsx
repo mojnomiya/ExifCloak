@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/og-image.png",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "ExifCloak — Image Metadata Editor for macOS",
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     title: "ExifCloak — Free EXIF & Metadata Editor for macOS",
     description:
       "Strip EXIF, GPS, AI markers from photos. Batch process. Auto-generate realistic camera profiles. Open-source, 100% offline.",
-    images: ["https://exifcloak.netlify.app/og-image.png"],
+    images: ["/twitter-image"],
   },
   alternates: {
     canonical: "https://exifcloak.netlify.app",
@@ -101,7 +101,7 @@ const jsonLd = {
   fileSize: "1MB",
   license: "https://opensource.org/licenses/MIT",
   isAccessibleForFree: true,
-  screenshot: "https://exifcloak.netlify.app/og-image.png",
+  screenshot: "https://exifcloak.netlify.app/opengraph-image",
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: "4.8",
